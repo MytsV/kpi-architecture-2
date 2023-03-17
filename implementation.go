@@ -28,7 +28,7 @@ func (s *Stack) Pop() (string, bool) {
 	}
 }
 
-//TODO: handle overflow?
+// TODO: handle overflow?
 var operations = map[string]func(float64, float64) (float64, error){
 	"+": func(a, b float64) (float64, error) {
 		return a + b, nil
@@ -50,8 +50,8 @@ var operations = map[string]func(float64, float64) (float64, error){
 }
 
 func FloatToString(x float64) string {
-    str := fmt.Sprintf("%.6f", x)
-    return strings.TrimRight(strings.TrimRight(str, "0"), ".")
+	str := fmt.Sprintf("%.6f", x)
+	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
 }
 
 // TODO: document this function.
@@ -78,8 +78,9 @@ func EvaluatePostfix(input string) (string, error) {
 			stack.Push(value)
 		}
 	}
-	for _, value := range stack {
-		return value, nil
+	if len(stack) != 1 {
+		return "", fmt.Errorf("expression_incorrect")
+	} else {
+		return stack[0], nil
 	}
-	return "TODO", fmt.Errorf("TODO")
 }
