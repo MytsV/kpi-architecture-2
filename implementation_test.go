@@ -77,7 +77,7 @@ var testTable = []testCase{
 	{
 		name:           "Calculations with float numbers",
 		input:          "2.7 -0.3 - 0.1 *",
-		expectedResult: "",
+		expectedResult: "0.3",
 		hasError:       false,
 	},
 
@@ -111,12 +111,6 @@ var testTable = []testCase{
 		input:          "2 6 2 -     -",
 		expectedResult: "-2",
 		hasError:       false,
-	},
-	{
-		name:           "Has an extra space between operators",
-		input:          "2 6 2 -     -",
-		expectedResult: "-2",
-		hasError:       true,
 	},
 	{
 		name:           "A character that is not a number, not an operator:0",
