@@ -27,9 +27,9 @@ func TestEvaluatePostfix(t *testing.T) {
 }
 
 func ExampleEvaluatePostfix() {
-	res, _ := EvaluatePostfix("+ 2 2")
+	res, _ := EvaluatePostfix("2 2 +")
 	fmt.Println(res)
 
 	// Output:
-	// 2 2 +
+	// 4
 }
