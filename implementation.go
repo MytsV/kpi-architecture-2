@@ -28,37 +28,53 @@ func (s *Stack) Pop() (string, bool) {
 	}
 }
 
+//TODO: handle overflow?
+var operations = map[string]func(float64, float64) (float64, error){
+	"+": func(a, b float64) (float64, error) {
+		return a + b, nil
+	},
+	"-": func(a, b float64) (float64, error) {
+		return b - a, nil
+	},
+	"*": func(a, b float64) (float64, error) {
+		return a * b, nil
+	},
+	"/": func(a, b float64) (float64, error) {
+		//TODO: handle zero division
+		return b / a, nil
+	},
+	"^": func(a, b float64) (float64, error) {
+		//TODO: handle imaginary root
+		return math.Pow(b, a), nil
+	},
+}
+
+func FloatToString(x float64) string {
+    str := fmt.Sprintf("%.6f", x)
+    return strings.TrimRight(strings.TrimRight(str, "0"), ".")
+}
+
 // TODO: document this function.
 // EvaluatePostfix...
 func EvaluatePostfix(input string) (string, error) {
 	values := strings.Split(input, " ")
 	var stack Stack
 	for _, value := range values {
-		if value == "+" || value == "-" || value == "*" || value == "/" || value == "^" {
+		operation, ok := operations[value]
+		if ok {
+			//TODO: handle empty stack error
 			a, _ := stack.Pop()
 			b, _ := stack.Pop()
 
-			aNumber, _ := strconv.Atoi(a)
-			bNumber, _ := strconv.Atoi(b)
+			//TODO: handle parsing error
+			aNumber, _ := strconv.ParseFloat(a, 64)
+			bNumber, _ := strconv.ParseFloat(b, 64)
 
-			var result int
-			if value == "+" {
-				result = aNumber + bNumber
-			}
-			if value == "*" {
-				result = aNumber * bNumber
-			}
-			if value == "/" {
-				result = bNumber / aNumber
-			}
-			if value == "-" {
-				result = bNumber - aNumber
-			}
-			if value == "^" {
-				result = int(math.Pow(float64(bNumber), float64(aNumber)))
-			}
-			stack.Push(strconv.Itoa(result))
+			//TODO: handle operation error
+			result, _ := operation(aNumber, bNumber)
+			stack.Push(FloatToString(result))
 		} else {
+			//TODO: check value?
 			stack.Push(value)
 		}
 	}
