@@ -139,21 +139,16 @@ var testTable = []testCase{
 }
 
 func TestEvaluatePostfix(t *testing.T) {
-	res, err := EvaluatePostfix("4 2 - 3 * 5 +")
-	if assert.Nil(t, err) {
-		assert.Equal(t, "11", res)
-	}
-	res, err = EvaluatePostfix("7 2 ^ 25 10 5 / + * 13 -")
-	if assert.Nil(t, err) {
-		assert.Equal(t, "1310", res)
-	}
-	res, err = EvaluatePostfix("3 5 2 ^ * 15 / 5 2 2 ^ - -")
-	if assert.Nil(t, err) {
-		assert.Equal(t, "4", res)
-	}
-	res, err = EvaluatePostfix("18 3 / 2 ^ 13 7 + 5 2 ^ * +")
-	if assert.Nil(t, err) {
-		assert.Equal(t, "536", res)
+	for _, test := range testTable {
+
+		actual, err := EvaluatePostfix(test.input)
+		assert.Equal(t, test.expectedResult, actual, test.name)
+
+		if test.hasError {
+			assert.NotNil(t, err, test.name)
+		} else {
+			assert.Nil(t, err, test.name)
+		}
 	}
 }
 
