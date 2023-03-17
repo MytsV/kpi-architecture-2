@@ -46,7 +46,7 @@ var operations = map[string]func(float64, float64) (float64, error){
 	},
 	"^": func(a, b float64) (float64, error) {
 		value := math.Pow(b, a)
-		if (math.IsNaN(value)) {
+		if math.IsNaN(value) {
 			return value, fmt.Errorf("imaginary_root")
 		}
 		return value, nil
@@ -67,17 +67,19 @@ func EvaluatePostfix(input string) (string, error) {
 		operation, ok := operations[value]
 		if ok {
 			a, success := stack.Pop()
-			if (!success) {
+			if !success {
 				return "", fmt.Errorf("expression_incorrect")
 			}
 			b, success := stack.Pop()
-			if (!success) {
+			if !success {
 				return "", fmt.Errorf("expression_incorrect")
 			}
 
-			//TODO: handle parsing error
-			aNumber, _ := strconv.ParseFloat(a, 64)
-			bNumber, _ := strconv.ParseFloat(b, 64)
+			aNumber, error := strconv.ParseFloat(a, 64)
+			bNumber, error := strconv.ParseFloat(b, 64)
+			if error != nil {
+				return "", fmt.Errorf("invalid_operand")
+			}
 
 			result, error := operation(aNumber, bNumber)
 			if error != nil {
@@ -85,7 +87,10 @@ func EvaluatePostfix(input string) (string, error) {
 			}
 			stack.Push(FloatToString(result))
 		} else {
-			//TODO: check value?
+			_, error := strconv.ParseFloat(value, 64)
+			if error != nil {
+				return "", fmt.Errorf("invalid_operand")
+			}
 			stack.Push(value)
 		}
 	}
