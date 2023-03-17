@@ -7,38 +7,59 @@ import (
 	"strings"
 )
 
+type Stack []string
+
+func (s *Stack) IsEmpty() bool {
+	return len(*s) == 0
+}
+
+func (s *Stack) Push(str string) {
+	*s = append(*s, str)
+}
+
+func (s *Stack) Pop() (string, bool) {
+	if s.IsEmpty() {
+		return "", false
+	} else {
+		index := len(*s) - 1
+		element := (*s)[index]
+		*s = (*s)[:index]
+		return element, true
+	}
+}
+
 // TODO: document this function.
 // EvaluatePostfix...
 func EvaluatePostfix(input string) (string, error) {
 	values := strings.Split(input, " ")
-	stack := make([]string, 0)
+	var stack Stack
 	for _, value := range values {
 		if value == "+" || value == "-" || value == "*" || value == "/" || value == "^" {
-			index := len(stack) - 1
-			a, _ := strconv.Atoi(stack[index])
-			stack = stack[:index]
-			index = len(stack) - 1
-			b, _ := strconv.Atoi(stack[index])
-			stack = stack[:index]
+			a, _ := stack.Pop()
+			b, _ := stack.Pop()
+
+			aNumber, _ := strconv.Atoi(a)
+			bNumber, _ := strconv.Atoi(b)
+
 			var result int
 			if value == "+" {
-				result = a + b
+				result = aNumber + bNumber
 			}
 			if value == "*" {
-				result = a * b
+				result = aNumber * bNumber
 			}
 			if value == "/" {
-				result = b / a
+				result = bNumber / aNumber
 			}
 			if value == "-" {
-				result = b - a
+				result = bNumber - aNumber
 			}
 			if value == "^" {
-				result = int(math.Pow(float64(b), float64(a)))
+				result = int(math.Pow(float64(bNumber), float64(aNumber)))
 			}
-			stack = append(stack, strconv.Itoa(result))
+			stack.Push(strconv.Itoa(result))
 		} else {
-			stack = append(stack, value)
+			stack.Push(value)
 		}
 	}
 	for _, value := range stack {
