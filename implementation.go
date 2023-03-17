@@ -61,7 +61,7 @@ func FloatToString(x float64) string {
 // TODO: document this function.
 // EvaluatePostfix...
 func EvaluatePostfix(input string) (string, error) {
-	values := strings.Split(input, " ")
+	values := strings.Fields(input)
 	var stack Stack
 	for _, value := range values {
 		operation, ok := operations[value]
