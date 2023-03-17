@@ -25,7 +25,7 @@ var testTable = []testCase{
 	},
 	{
 		name:           "simple input; - operator",
-		input:          "104 - 506",
+		input:          "104 506 -",
 		expectedResult: "-402",
 		hasError:       false,
 	},
@@ -51,7 +51,7 @@ var testTable = []testCase{
 	{
 		name:           "complex input:0",
 		input:          "4 2 - 3 * 5 + -1 * -11 / 0 ^",
-		expectedResult: "11",
+		expectedResult: "1",
 		hasError:       false,
 	},
 	{
