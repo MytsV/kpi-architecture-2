@@ -66,9 +66,14 @@ func EvaluatePostfix(input string) (string, error) {
 	for _, value := range values {
 		operation, ok := operations[value]
 		if ok {
-			//TODO: handle empty stack error
-			a, _ := stack.Pop()
-			b, _ := stack.Pop()
+			a, success := stack.Pop()
+			if (!success) {
+				return "", fmt.Errorf("expression_incorrect")
+			}
+			b, success := stack.Pop()
+			if (!success) {
+				return "", fmt.Errorf("expression_incorrect")
+			}
 
 			//TODO: handle parsing error
 			aNumber, _ := strconv.ParseFloat(a, 64)
