@@ -28,7 +28,6 @@ func (s *Stack) Pop() (string, bool) {
 	}
 }
 
-// TODO: handle overflow?
 var operations = map[string]func(float64, float64) (float64, error){
 	"+": func(a, b float64) (float64, error) {
 		return a + b, nil
@@ -40,12 +39,17 @@ var operations = map[string]func(float64, float64) (float64, error){
 		return a * b, nil
 	},
 	"/": func(a, b float64) (float64, error) {
-		//TODO: handle zero division
+		if a == 0 {
+			return math.NaN(), fmt.Errorf("zero_division")
+		}
 		return b / a, nil
 	},
 	"^": func(a, b float64) (float64, error) {
-		//TODO: handle imaginary root
-		return math.Pow(b, a), nil
+		value := math.Pow(b, a)
+		if math.IsNaN(value) {
+			return value, fmt.Errorf("imaginary_root")
+		}
+		return value, nil
 	},
 }
 
@@ -57,24 +61,36 @@ func FloatToString(x float64) string {
 // TODO: document this function.
 // EvaluatePostfix...
 func EvaluatePostfix(input string) (string, error) {
-	values := strings.Split(input, " ")
+	values := strings.Fields(input)
 	var stack Stack
 	for _, value := range values {
 		operation, ok := operations[value]
 		if ok {
-			//TODO: handle empty stack error
-			a, _ := stack.Pop()
-			b, _ := stack.Pop()
+			a, success := stack.Pop()
+			if !success {
+				return "", fmt.Errorf("expression_incorrect")
+			}
+			b, success := stack.Pop()
+			if !success {
+				return "", fmt.Errorf("expression_incorrect")
+			}
 
-			//TODO: handle parsing error
-			aNumber, _ := strconv.ParseFloat(a, 64)
-			bNumber, _ := strconv.ParseFloat(b, 64)
+			aNumber, error := strconv.ParseFloat(a, 64)
+			bNumber, error := strconv.ParseFloat(b, 64)
+			if error != nil {
+				return "", fmt.Errorf("invalid_operand")
+			}
 
-			//TODO: handle operation error
-			result, _ := operation(aNumber, bNumber)
+			result, error := operation(aNumber, bNumber)
+			if error != nil {
+				return "", error
+			}
 			stack.Push(FloatToString(result))
 		} else {
-			//TODO: check value?
+			_, error := strconv.ParseFloat(value, 64)
+			if error != nil {
+				return "", fmt.Errorf("invalid_operand")
+			}
 			stack.Push(value)
 		}
 	}
