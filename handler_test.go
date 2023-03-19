@@ -10,10 +10,10 @@ import (
 
 func TestComputerHandler(t *testing.T) {
 	type testCase struct {
-		name           string // test case name
-		input          string // input
-		expectedOutput string // expected outcome
-		hasError       bool   // a flag to check that an error is expected
+		name           string
+		input          string
+		expectedOutput string
+		hasError       bool
 	}
 
 	var testTable = []testCase{
@@ -31,11 +31,9 @@ func TestComputerHandler(t *testing.T) {
 		},
 	}
 
-	for _, v := range testTable {
-
-		input := strings.NewReader(v.input)
+	for _, test := range testTable {
+		input := strings.NewReader(test.input)
 		output := new(bytes.Buffer)
-
 		handler := ComputeHandler{
 			Input:  input,
 			Output: output,
@@ -44,13 +42,11 @@ func TestComputerHandler(t *testing.T) {
 		err := handler.Compute()
 
 		outputString := output.String()
-
-		assert.Equal(t, v.expectedOutput, outputString, v.name)
-
-		if v.hasError {
-			assert.NotNil(t, err, v.name)
+		assert.Equal(t, test.expectedOutput, outputString, test.name)
+		if test.hasError {
+			assert.NotNil(t, err, test.name)
 		} else {
-			assert.Nil(t, err, v.name)
+			assert.Nil(t, err, test.name)
 		}
 	}
 }
