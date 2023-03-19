@@ -17,7 +17,7 @@ var (
 
 func getFile(path string) (file *os.File) {
 	var err error
-	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
