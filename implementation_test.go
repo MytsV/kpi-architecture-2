@@ -147,9 +147,18 @@ func TestEvaluatePostfix(t *testing.T) {
 }
 
 func ExampleEvaluatePostfix() {
-	res, _ := EvaluatePostfix("2 2 +")
-	fmt.Println(res)
+	exp1, _ := EvaluatePostfix("9 7 - 2 / ")
+	fmt.Printf("exp1: %v\n", exp1)
+
+	exp2, _ := EvaluatePostfix("3 -4 * 6 +")
+	fmt.Printf("exp2: %v\n", exp2)
+
+	exp3, _ := EvaluatePostfix("11 2 ^")
+	fmt.Printf("exp3: %v\n", exp3)
 
 	// Output:
-	// 4
+	// exp1: 1
+	// exp2: -6
+	// exp3: 121
+
 }
