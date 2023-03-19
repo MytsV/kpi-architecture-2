@@ -2,11 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io"
 	"os"
 	"strings"
-
+	"log"
 	lab2 "github.com/MytsV/kpi-architecture-2"
 )
 
@@ -20,7 +19,7 @@ func getFile(path string) (file *os.File) {
 	var err error
 	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return
 }
@@ -28,7 +27,7 @@ func getFile(path string) (file *os.File) {
 func main() {
 	flag.Parse()
 	if *inputExpression != "" && *inputFile != "" {
-		panic("Multiple input flags specified")
+		log.Fatal("Multiple input flags specified")
 	}
 
 	var (
@@ -43,7 +42,7 @@ func main() {
 		defer file.Close()
 		reader = file
 	} else {
-		panic("No input flags specified")
+		log.Fatal("No input flags specified")
 	}
 
 	if *outputFile != "" {
@@ -60,7 +59,6 @@ func main() {
 	}
 	err := handler.Compute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		log.Fatal(err) //Outputs to stderr
 	}
 }
