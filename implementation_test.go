@@ -9,10 +9,10 @@ import (
 func TestEvaluatePostfix(t *testing.T) {
 
 	type testCase struct {
-		name           string // test case name
-		input          string // function input
-		expectedResult string // expected outcome
-		hasError       bool   // a flag to check that an error is expected
+		name           string
+		input          string
+		expectedResult string
+		hasError       bool
 	}
 
 	// Define a slice of testCase as test table

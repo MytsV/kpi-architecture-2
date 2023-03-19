@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestComputerHandler(t *testing.T) {
+func TestCompute(t *testing.T) {
 	type testCase struct {
 		name           string
 		input          string
