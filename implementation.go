@@ -53,7 +53,7 @@ var operations = map[string]func(float64, float64) (float64, error){
 	},
 }
 
-//floatToString converts a real number to a string, excluding trailing zeros.
+// floatToString converts a real number to a string, excluding trailing zeros.
 func floatToString(x float64) string {
 	str := fmt.Sprintf("%.6f", x)
 	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
