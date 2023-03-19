@@ -4,13 +4,13 @@ import (
 	"io"
 )
 
-// The ComputeHandler struct constructed defines input and output
+// ComputeHandler struct defines input and output via default interfaces
 type ComputeHandler struct {
 	Input  io.Reader
 	Output io.Writer
 }
 
-// Compute() method should reads the expression from the input, computes it, and write the result to the output.
+// Compute method reads the expression from the input, evaluates it, and writes the result to the output.
 func (ch *ComputeHandler) Compute() error {
 	inputBuffer := make([]byte, 256)
 	n, err := ch.Input.Read(inputBuffer)
