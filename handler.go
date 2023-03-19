@@ -21,7 +21,7 @@ func (ch *ComputeHandler) Compute() error {
 	if err != nil {
 		return err
 	}
-	_, err = ch.Output.Write([]byte(result + "\n"))
+	_, err = ch.Output.Write([]byte(result))
 	if err != nil {
 		return err
 	}
