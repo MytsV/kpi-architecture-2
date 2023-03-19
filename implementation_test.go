@@ -2,9 +2,8 @@ package lab2
 
 import (
 	"fmt"
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestEvaluatePostfix(t *testing.T) {
@@ -18,7 +17,7 @@ func TestEvaluatePostfix(t *testing.T) {
 
 	// Define a slice of testCase as test table
 	var testTable = []testCase{
-		//simple input (2 - 3 operands)
+		//Simple input (2 - 3 operands)
 		{
 			name:           "Simple input; + operator",
 			input:          "4 0 4 + +",
@@ -49,7 +48,7 @@ func TestEvaluatePostfix(t *testing.T) {
 			expectedResult: "1331",
 			hasError:       false,
 		},
-		//complex input
+		//Complex input
 		{
 			name:           "Complex input:0",
 			input:          "4 2 - 3 * 5 + -1 * -11 / 0 ^",
@@ -62,7 +61,7 @@ func TestEvaluatePostfix(t *testing.T) {
 			expectedResult: "144",
 			hasError:       false,
 		},
-		//school math restrictions
+		//Invalid math operations
 		{
 			name:           "Division by zero",
 			input:          "1 0 /",
@@ -75,15 +74,14 @@ func TestEvaluatePostfix(t *testing.T) {
 			expectedResult: "",
 			hasError:       true,
 		},
-		//float
+		//Floating point numbers
 		{
 			name:           "Calculations with float numbers",
 			input:          "2.7 -0.3 - 0.1 *",
 			expectedResult: "0.3",
 			hasError:       false,
 		},
-
-		//input ambiguities
+		//Input ambiguities
 		{
 			name:           "Not enough operands in the stack",
 			input:          "4 0 4 + * -",
