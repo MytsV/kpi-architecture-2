@@ -7,19 +7,19 @@ import (
 	"strings"
 )
 
-type Stack []string
+type stack []float64
 
-func (s *Stack) IsEmpty() bool {
+func (s *stack) isEmpty() bool {
 	return len(*s) == 0
 }
 
-func (s *Stack) Push(str string) {
-	*s = append(*s, str)
+func (s *stack) push(x float64) {
+	*s = append(*s, x)
 }
 
-func (s *Stack) Pop() (string, bool) {
-	if s.IsEmpty() {
-		return "", false
+func (s *stack) pop() (float64, bool) {
+	if s.isEmpty() {
+		return math.NaN(), false
 	} else {
 		index := len(*s) - 1
 		element := (*s)[index]
@@ -53,50 +53,45 @@ var operations = map[string]func(float64, float64) (float64, error){
 	},
 }
 
-func FloatToString(x float64) string {
+// floatToString converts a real number to a string, excluding trailing zeros.
+func floatToString(x float64) string {
 	str := fmt.Sprintf("%.6f", x)
 	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
 }
 
-// TODO: document this function.
-// EvaluatePostfix...
+/*
+EvaluatePostfix computes and returns the result of a mathematical expression in postfix notation.
+If expression is incorrect, error is returned.
+Functions supports only "+", "-", "*", "/" and "^" operations. Operands must be real numbers.
+*/
 func EvaluatePostfix(input string) (string, error) {
 	values := strings.Fields(input)
-	var stack Stack
+	var stack stack
 	for _, value := range values {
-		operation, ok := operations[value]
-		if ok {
-			a, success := stack.Pop()
-			if !success {
-				return "", fmt.Errorf("expression_incorrect")
-			}
-			b, success := stack.Pop()
-			if !success {
+		operation, isOperation := operations[value]
+		if isOperation {
+			a, okFirst := stack.pop()
+			b, okSecond := stack.pop()
+			if !okFirst || !okSecond {
 				return "", fmt.Errorf("expression_incorrect")
 			}
 
-			aNumber, error := strconv.ParseFloat(a, 64)
-			bNumber, error := strconv.ParseFloat(b, 64)
-			if error != nil {
-				return "", fmt.Errorf("invalid_operand")
-			}
-
-			result, error := operation(aNumber, bNumber)
+			result, error := operation(a, b)
 			if error != nil {
 				return "", error
 			}
-			stack.Push(FloatToString(result))
+			stack.push(result)
 		} else {
-			_, error := strconv.ParseFloat(value, 64)
+			floatValue, error := strconv.ParseFloat(value, 64)
 			if error != nil {
 				return "", fmt.Errorf("invalid_operand")
 			}
-			stack.Push(value)
+			stack.push(floatValue)
 		}
 	}
 	if len(stack) != 1 {
 		return "", fmt.Errorf("expression_incorrect")
 	} else {
-		return stack[0], nil
+		return floatToString(stack[0]), nil
 	}
 }

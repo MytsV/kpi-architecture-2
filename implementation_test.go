@@ -134,7 +134,6 @@ var testTable = []testCase{
 
 func TestEvaluatePostfix(t *testing.T) {
 	for _, test := range testTable {
-
 		actual, err := EvaluatePostfix(test.input)
 		assert.Equal(t, test.expectedResult, actual, test.name)
 
@@ -147,18 +146,26 @@ func TestEvaluatePostfix(t *testing.T) {
 }
 
 func ExampleEvaluatePostfix() {
-	exp1, _ := EvaluatePostfix("9 7 - 2 / ")
-	fmt.Printf("exp1: %v\n", exp1)
+	outputExample := func(name string, exp string) {
+		result, error := EvaluatePostfix(exp)
+		if result != "" {
+			fmt.Printf("%s: %s\n", name, result)
+		}
+		if error != nil {
+			fmt.Printf("Error at %s: %v\n", name, error)
+		}
+	}
 
-	exp2, _ := EvaluatePostfix("3 -4 * 6 +")
-	fmt.Printf("exp2: %v\n", exp2)
-
-	exp3, _ := EvaluatePostfix("11 2 ^")
-	fmt.Printf("exp3: %v\n", exp3)
+	outputExample("Ex1", "9 7 - 2 / ")
+	outputExample("Ex2", "9 -")
+	outputExample("Ex3", "3 -4 * 6 +")
+	outputExample("Ex4", "11 2 ^")
+	outputExample("Ex5", "76 0xdeadbeef &")
 
 	// Output:
-	// exp1: 1
-	// exp2: -6
-	// exp3: 121
-
+	// Ex1: 1
+	// Error at Ex2: expression_incorrect
+	// Ex3: -6
+	// Ex4: 121
+	// Error at Ex5: invalid_operand
 }
