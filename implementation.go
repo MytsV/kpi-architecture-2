@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-type Stack []string
+type stack []string
 
-func (s *Stack) IsEmpty() bool {
+func (s *stack) isEmpty() bool {
 	return len(*s) == 0
 }
 
-func (s *Stack) Push(str string) {
+func (s *stack) push(str string) {
 	*s = append(*s, str)
 }
 
-func (s *Stack) Pop() (string, bool) {
-	if s.IsEmpty() {
+func (s *stack) pop() (string, bool) {
+	if s.isEmpty() {
 		return "", false
 	} else {
 		index := len(*s) - 1
@@ -53,24 +53,28 @@ var operations = map[string]func(float64, float64) (float64, error){
 	},
 }
 
-func FloatToString(x float64) string {
+//floatToString converts real number to string, excluding trailing zeros.
+func floatToString(x float64) string {
 	str := fmt.Sprintf("%.6f", x)
 	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
 }
 
-// TODO: document this function.
-// EvaluatePostfix...
+/*
+EvaluatePostfix computes and returns the result of a mathematical expression in postfix notation.
+If expression is incorrect, error is returned.
+Functions supports only "+", "-", "*", "/" and "^" operations. Operands must be real numbers.
+*/
 func EvaluatePostfix(input string) (string, error) {
 	values := strings.Fields(input)
-	var stack Stack
+	var stack stack
 	for _, value := range values {
 		operation, ok := operations[value]
 		if ok {
-			a, success := stack.Pop()
+			a, success := stack.pop()
 			if !success {
 				return "", fmt.Errorf("expression_incorrect")
 			}
-			b, success := stack.Pop()
+			b, success := stack.pop()
 			if !success {
 				return "", fmt.Errorf("expression_incorrect")
 			}
@@ -85,13 +89,13 @@ func EvaluatePostfix(input string) (string, error) {
 			if error != nil {
 				return "", error
 			}
-			stack.Push(FloatToString(result))
+			stack.push(floatToString(result))
 		} else {
 			_, error := strconv.ParseFloat(value, 64)
 			if error != nil {
 				return "", fmt.Errorf("invalid_operand")
 			}
-			stack.Push(value)
+			stack.push(value)
 		}
 	}
 	if len(stack) != 1 {
