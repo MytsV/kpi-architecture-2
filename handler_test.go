@@ -2,6 +2,7 @@ package lab2
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 	"testing"
 
@@ -13,7 +14,7 @@ func TestComputerHandler(t *testing.T) {
 		name           string
 		input          string
 		expectedOutput string
-		hasError       bool
+		expectedError  error
 	}
 
 	var testTable = []testCase{
@@ -21,13 +22,19 @@ func TestComputerHandler(t *testing.T) {
 			name:           "Simple input",
 			input:          "4 0 4 + +",
 			expectedOutput: "8",
-			hasError:       false,
+			expectedError:  nil,
 		},
 		{
-			name:           "Has an error",
+			name:           "Error: expression_incorrect",
 			input:          "4 0 4",
 			expectedOutput: "",
-			hasError:       true,
+			expectedError:  errors.New("expression_incorrect"),
+		},
+		{
+			name:           "Error: zero_division",
+			input:          "12 78 3 0 / + *",
+			expectedOutput: "",
+			expectedError:  errors.New("zero_division"),
 		},
 	}
 
@@ -42,11 +49,8 @@ func TestComputerHandler(t *testing.T) {
 		err := handler.Compute()
 
 		outputString := output.String()
+
 		assert.Equal(t, test.expectedOutput, outputString, test.name)
-		if test.hasError {
-			assert.NotNil(t, err, test.name)
-		} else {
-			assert.Nil(t, err, test.name)
-		}
+		assert.Equal(t, test.expectedError, err, test.name)
 	}
 }
