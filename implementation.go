@@ -7,19 +7,19 @@ import (
 	"strings"
 )
 
-type stack []string
+type stack []float64
 
 func (s *stack) isEmpty() bool {
 	return len(*s) == 0
 }
 
-func (s *stack) push(str string) {
-	*s = append(*s, str)
+func (s *stack) push(x float64) {
+	*s = append(*s, x)
 }
 
-func (s *stack) pop() (string, bool) {
+func (s *stack) pop() (float64, bool) {
 	if s.isEmpty() {
-		return "", false
+		return math.NaN(), false
 	} else {
 		index := len(*s) - 1
 		element := (*s)[index]
@@ -53,7 +53,7 @@ var operations = map[string]func(float64, float64) (float64, error){
 	},
 }
 
-//floatToString converts real number to string, excluding trailing zeros.
+//floatToString converts a real number to a string, excluding trailing zeros.
 func floatToString(x float64) string {
 	str := fmt.Sprintf("%.6f", x)
 	return strings.TrimRight(strings.TrimRight(str, "0"), ".")
@@ -68,39 +68,30 @@ func EvaluatePostfix(input string) (string, error) {
 	values := strings.Fields(input)
 	var stack stack
 	for _, value := range values {
-		operation, ok := operations[value]
-		if ok {
-			a, success := stack.pop()
-			if !success {
-				return "", fmt.Errorf("expression_incorrect")
-			}
-			b, success := stack.pop()
-			if !success {
+		operation, isOperation := operations[value]
+		if isOperation {
+			a, okFirst := stack.pop()
+			b, okSecond := stack.pop()
+			if !okFirst || !okSecond {
 				return "", fmt.Errorf("expression_incorrect")
 			}
 
-			aNumber, error := strconv.ParseFloat(a, 64)
-			bNumber, error := strconv.ParseFloat(b, 64)
-			if error != nil {
-				return "", fmt.Errorf("invalid_operand")
-			}
-
-			result, error := operation(aNumber, bNumber)
+			result, error := operation(a, b)
 			if error != nil {
 				return "", error
 			}
-			stack.push(floatToString(result))
+			stack.push(result)
 		} else {
-			_, error := strconv.ParseFloat(value, 64)
+			floatValue, error := strconv.ParseFloat(value, 64)
 			if error != nil {
 				return "", fmt.Errorf("invalid_operand")
 			}
-			stack.push(value)
+			stack.push(floatValue)
 		}
 	}
 	if len(stack) != 1 {
 		return "", fmt.Errorf("expression_incorrect")
 	} else {
-		return stack[0], nil
+		return floatToString(stack[0]), nil
 	}
 }
