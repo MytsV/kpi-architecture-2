@@ -12,12 +12,11 @@ type ComputeHandler struct {
 
 // Compute method reads the expression from the input, evaluates it, and writes the result to the output.
 func (ch *ComputeHandler) Compute() error {
-	inputBuffer := make([]byte, 256)
-	n, err := ch.Input.Read(inputBuffer)
+	n, err := io.ReadAll(ch.Input)
 	if err != nil {
 		return err
 	}
-	result, err := EvaluatePostfix(string(inputBuffer[:n]))
+	result, err := EvaluatePostfix(string(n))
 	if err != nil {
 		return err
 	}
