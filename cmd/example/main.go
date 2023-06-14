@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"io"
+	"log"
 	"os"
 	"strings"
-	"log"
+
 	lab2 "github.com/MytsV/kpi-architecture-2"
 )
 
@@ -15,7 +16,16 @@ var (
 	outputFile      = flag.String("o", "", "Path to an output file")
 )
 
-func getFile(path string) (file *os.File) {
+func getReadFile(path string) (file *os.File) {
+	var err error
+	file, err = os.OpenFile(path, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
+}
+
+func getWriteFile(path string) (file *os.File) {
 	var err error
 	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
 	if err != nil {
@@ -38,7 +48,7 @@ func main() {
 	if *inputExpression != "" {
 		reader = strings.NewReader(*inputExpression)
 	} else if *inputFile != "" {
-		file := getFile(*inputFile)
+		file := getReadFile(*inputFile)
 		defer file.Close()
 		reader = file
 	} else {
@@ -46,7 +56,7 @@ func main() {
 	}
 
 	if *outputFile != "" {
-		file := getFile(*outputFile)
+		file := getWriteFile(*outputFile)
 		defer file.Close()
 		writer = file
 	} else {
